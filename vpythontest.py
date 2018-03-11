@@ -7,7 +7,13 @@ from vpython import *
 G = 6.67428e-11
 
 # Astronomical Unit
-AU = (149.6e6 * 1000)     # 149.6 million km, in meters.
+AU = 149.6e6 * 1000  # 149.6 million km, in meters.
+
+# Scale factor for planets size so that they're visible relative to the large
+# distances between them.
+SUNSCALE = 70  # For use by Sun, it's too large
+LARGEBODYSCALE = 500  # For use by the giants, they're too large
+SMALLBODYSCALE = 2000 # For use by other planets
 
 # Masses of all the planets (kg)
 M_SUN = 1.989 * 10**30
@@ -20,6 +26,17 @@ M_SAT = 5.68  * 10**26
 M_URA = 8.68  * 10**25
 M_NEP = 1.02  * 10**26
 
+# Radiuses of all the bodies (m)
+R_SUN = 696000 * 10**3
+R_MER = 2448.5 * 10**3
+R_VEN = 6052   * 10**3
+R_EAR = 6378   * 10**3
+R_MAR = 3396   * 10**3
+R_JUP = 71492  * 10**3
+R_SAT = 60268  * 10**3
+R_URA = 25559  * 10**3
+R_NEP = 24764  * 10**3
+
 class Body():
     """
     mass : mass in kg
@@ -29,10 +46,9 @@ class Body():
 
     name = None
     mass = None
+    model = None
     vx = vy = 0.0
     px = py = 0.0
-    model = None
-
 
     # This function computes the force between one body and the other, and then
     # returns them in the order fx, fy
@@ -76,9 +92,6 @@ def loop(bodies):
     """
     timestep = 24*3600  # One day
 
-    for body in bodies:
-        print("Hello I am " + body.name)
-
     step = 1
     while True:
         #commented out update function
@@ -102,7 +115,7 @@ def loop(bodies):
 
         # Update velocities based upon on the force.
         for body in bodies:
-            sleep(0.001)
+            sleep(0.0001)
             fx, fy = force[body]
             body.vx += fx / body.mass * timestep
             body.vy += fy / body.mass * timestep
@@ -116,20 +129,87 @@ def loop(bodies):
 def main():
     sun = Body()
     sun.name = 'Sun'
-    sun.mass = 1.98892 * 10**30
-    sun.px = 0
-    sun.vy = 0
-    sun.model = sphere(pos = vector(0,0,0), radius = 6960000e3, color = color.yellow)
+    sun.mass = M_SUN
+    sun.model = sphere(pos = vector(0,0,0),
+                       radius = R_SUN * SUNSCALE,
+                       color = color.yellow)
+
+
+    mercury = Body()
+    mercury.name = 'Mercury'
+    mercury.mass = M_MER
+    mercury.px = 0.39 * AU
+    mercury.vy = -47.87 * 1000
+    mercury.model = sphere(pos = vector(mercury.px,0,0),
+                           radius = R_MER * SMALLBODYSCALE,
+                           color = vec(1,1,1))
+
+    venus = Body()
+    venus.name = 'Venus'
+    venus.mass = M_VEN
+    venus.px = 0.723 * AU
+    venus.vy = -35.02 * 1000
+    venus.model = sphere(pos = vector(venus.px,0,0),
+                         radius = R_VEN * SMALLBODYSCALE,
+                         color = color.orange)
 
     earth = Body()
     earth.name = 'Earth'
-    earth.mass = 5.9742 * 10**24
-    earth.px = -1*AU
-    earth.vy = 29.783 * 1000            # 29.783 km/sec
-    earth.model = sphere(pos = vector(earth.px,0,0), radius = 6960000e3, color = color.blue)
+    earth.mass = M_EAR
+    earth.px = -1 * AU
+    earth.vy = 29.783 * 1000
+    earth.model = sphere(pos = vector(earth.px,0,0),
+                         radius = R_EAR * SMALLBODYSCALE,
+                         color = color.blue)
 
-    loop([sun, earth])
+    mars = Body()
+    mars.name = 'Mars'
+    mars.mass = M_MAR
+    mars.px = -1.524 * AU
+    mars.vy = 24.1 * 1000
+    mars.model = sphere(pos = vector(mars.px,0,0),
+                         radius = R_MAR * SMALLBODYSCALE,
+                         color = color.red)
 
+    jupiter = Body()
+    jupiter.name = 'Jupiter'
+    jupiter.mass = M_JUP
+    jupiter.px = 5.203 * AU
+    jupiter.vy = -13.1 * 1000
+    jupiter.model = sphere(pos = vector(jupiter.px,0,0),
+                         radius = R_JUP * LARGEBODYSCALE,
+                         color = color.green)
 
+    saturn = Body()
+    saturn.name = 'Saturn'
+    saturn.mass = M_SAT
+    saturn.px = 9.539 * AU
+    saturn.vy = -9.69 * 1000
+    saturn.model = sphere(pos = vector(saturn.px,0,0),
+                         radius = R_SAT * LARGEBODYSCALE,
+                         color = vec(1,0,1))
+
+    uranus = Body()
+    uranus.name = 'Uranus'
+    uranus.mass = M_URA
+    uranus.px = 19.18 * AU
+    uranus.vy = -6.81 * 1000
+    uranus.model = sphere(pos = vector(uranus.px,0,0),
+                         radius = R_URA * LARGEBODYSCALE,
+                         color = color.white)
+
+    # Note, Neptune appears to be quite far away. this makes relative
+    # sizes very small
+    neptune = Body()
+    neptune.name = 'Neptune'
+    neptune.mass = M_NEP
+    neptune.px = 30.06 * AU
+    neptune.vy = -5.43 * 1000
+    neptune.model = sphere(pos = vector(neptune.px,0,0),
+                         radius = R_NEP * LARGEBODYSCALE,
+                         color = color.blue)
+
+    loop([sun, mercury, venus, earth, mars, jupiter, saturn,
+          uranus, neptune])
 if __name__ == '__main__':
     main()
