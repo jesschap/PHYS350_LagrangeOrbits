@@ -6,6 +6,9 @@ from vpython import *
 # Gravitational constant
 G = 6.67428e-11
 
+# Astronomical Unit
+AU = (149.6e6 * 1000)     # 149.6 million km, in meters.
+
 # Masses of all the planets (kg)
 M_SUN = 1.989 * 10**30
 M_MER = 3.3   * 10**23
@@ -39,7 +42,6 @@ class Body():
         Returns the force exerted upon this body by the other body.
         """
         # Report an error if the other object is the same as this one.
-        print("ehehehhe")
         if self is other:
             raise ValueError("Attraction of object %r to itself requested"
                              % self.name)
@@ -73,7 +75,6 @@ def loop(bodies):
     positions of all the provided bodies.
     """
     timestep = 24*3600  # One day
-    print("Ijsiddjijds'm here")
 
     for body in bodies:
         print("Hello I am " + body.name)
@@ -92,7 +93,7 @@ def loop(bodies):
                 # Don't calculate the body's attraction to itself lol
                 if body is other:
                     continue
-                fx, fy = body.attraction(other)
+                fx, fy = body.attraction_force(other)
                 total_fx += fx
                 total_fy += fy
 
@@ -101,6 +102,7 @@ def loop(bodies):
 
         # Update velocities based upon on the force.
         for body in bodies:
+            sleep(0.001)
             fx, fy = force[body]
             body.vx += fx / body.mass * timestep
             body.vy += fy / body.mass * timestep
@@ -112,23 +114,21 @@ def loop(bodies):
             body.model.pos = newpos
 
 def main():
-    print("Hello my friend")
     sun = Body()
     sun.name = 'Sun'
     sun.mass = 1.98892 * 10**30
     sun.px = 0
     sun.vy = 0
-    sun.model = sphere(pos = vector(0,0,0), radius = 0.5, color = color.yellow)
+    sun.model = sphere(pos = vector(0,0,0), radius = 6960000e3, color = color.yellow)
 
-    print("Hello my friendssss")
     earth = Body()
     earth.name = 'Earth'
     earth.mass = 5.9742 * 10**24
     earth.px = -1*AU
     earth.vy = 29.783 * 1000            # 29.783 km/sec
-    earth.model = sphere(pos = vector(10,0,0), radius = 0.5, color = color.blue)
+    earth.model = sphere(pos = vector(earth.px,0,0), radius = 6960000e3, color = color.blue)
 
-    loop([sun, earth, venus, mars, jupiter, ast])
+    loop([sun, earth])
 
 
 if __name__ == '__main__':
