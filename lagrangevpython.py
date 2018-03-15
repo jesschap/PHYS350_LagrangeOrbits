@@ -1,5 +1,3 @@
-# pylama:ignore=W391,E231,E251,E303,E221,E272
-
 import pdb
 import math
 from vpython import *
@@ -56,14 +54,14 @@ E_URA = 0.046
 E_NEP = 0.011
 
 # Angular Momentums of planets (kg*m^2/s)
-L_MER = 8.95449 * 10**38
-L_VEN = 1.84562 * 10**40
-L_EAR = 2.66003 * 10**40
-L_MAR = 3.51553 * 10**39
-L_JUP = 1.92635 * 10**43
-L_SAT = 7.82148 * 10**42
-L_URA = 1.69313 * 10**42
-L_NEP = 2.49140 * 10**42
+L_MER =  8.95449 * 10**38
+L_VEN = -1.84562 * 10**40
+L_EAR =  2.66003 * 10**40
+L_MAR =  3.51553 * 10**39
+L_JUP =  1.92635 * 10**43
+L_SAT =  7.82148 * 10**42
+L_URA = -1.69313 * 10**42
+L_NEP =  2.49140 * 10**42
 
 # Distances of planets to sun (m)
 # PROBLEM: THESE are al in AU so are mean distances. Change later
@@ -96,7 +94,6 @@ class Body:
         self.lz    = lz
         self.ecc   = ecc
 
-
 def compute_motion(planet):
     """
     planet: the planet to compute motion of
@@ -121,8 +118,6 @@ def compute_motion(planet):
     # Get the new planet distance
     planet.dist = c / (1 + planet.ecc * math.cos(planet.angle))
 
-#    pdb.set_trace()
-
     # Update the vpython simulation
     update_vmodel(planet)
 
@@ -140,93 +135,63 @@ def update_vmodel(planet):
     planet.model.pos = vector(x, y, 0)
 
 def loop(bodies):
-    """([Body])
+    """
+    bodies: a list of planets that will be modelled in the potential well of the sun
 
     Never returns; loops through the simulation, updating the
     positions of all the provided bodies.
     """
-
-
-    print("Beginning simulation loop...")
-
     while True:
         sleep(0.0001)
         for body in bodies:
             compute_motion(body)
 
-
-
 def main():
+    #pdb.set_trace()
+
+    scene.title  ='Planet Simulation'
+    scene.width  = 1100
+    scene.height = 700
+
     sunmodel = sphere(pos = vector(0,0,0),
                       radius = R_SUN * SUNSCALE,
                       color = color.yellow)
-    sun = Body('Sun', sunmodel, M_SUN, 0, 0, 0, 0)
-
-
     mercurymodel = sphere(pos = vector(D_MER,0,0),
                            radius = R_MER * SMALLBODYSCALE,
                            color = vec(1,1,1))
-    mercury = Body('Mercury', mercurymodel, M_MER, 0, D_MER, L_MER, E_MER)
-
     venusmodel = sphere(pos = vector(D_VEN,0,0),
                          radius = R_VEN * SMALLBODYSCALE,
                          color = color.orange)
-    venus = Body('Venus', venusmodel, M_VEN, 0, D_VEN, L_VEN, E_VEN)
-
     earthmodel = sphere(pos = vector(D_EAR,0,0),
                          radius = R_EAR * SMALLBODYSCALE,
                          color = color.blue)
-    earth = Body('Earth', earthmodel, M_EAR, 0, D_EAR, L_EAR, E_EAR)
+    marsmodel = sphere(pos = vector(D_MAR,0,0),
+                        radius = R_MAR * SMALLBODYSCALE,
+                        color = color.red)
+    jupitermodel = sphere(pos = vector(D_JUP,0,0),
+                        radius = R_JUP * LARGEBODYSCALE,
+                        color = color.green)
+    saturnmodel = sphere(pos = vector(D_SAT,0,0),
+                        radius = R_SAT * LARGEBODYSCALE,
+                        color = vec(1,0,1))
+    uranusmodel = sphere(pos = vector(D_URA,0,0),
+                         radius = R_URA * LARGEBODYSCALE,
+                         color = color.white)
+    neptunemodel = sphere(pos = vector(D_NEP,0,0),
+                         radius = R_NEP * LARGEBODYSCALE,
+                         color = color.blue)
 
+    sun     = Body('Sun', sunmodel, M_SUN, 0, 0, 0, 0)
+    mercury = Body('Mercury', mercurymodel, M_MER, 0, D_MER, L_MER, E_MER)
+    venus   = Body('Venus', venusmodel, M_VEN, 0, D_VEN, L_VEN, E_VEN)
+    earth   = Body('Earth', earthmodel, M_EAR, 0, D_EAR, L_EAR, E_EAR)
+    mars    = Body('Mars', marsmodel, M_MAR, 0, D_MAR, L_MAR, E_MAR)
+    jupiter = Body('Jupiter', jupitermodel, M_JUP, 0, D_JUP, L_JUP, E_JUP)
+    saturn  = Body('Saturn', saturnmodel, M_SAT, 0, D_SAT, L_SAT, E_SAT)
+    uranus  = Body('Uranus', uranusmodel, M_URA, 0, D_URA, L_URA, E_URA)
+    neptune = Body('Neptune', neptunemodel, M_NEP, 0, D_NEP, L_NEP, E_NEP)
 
-    """
-
-    THESE HAVE NOT BEEN REFORMATTED FOR THE NEW FUNCTION PARAMETERS YET, MUST MODIFY
-        mars = Body()
-        mars.name = 'Mars'
-        mars.mass = M_MAR
-        mars.lz   = L_MAR
-        mars.model = sphere(pos = vector(D_MAR,0,0),
-                            radius = R_MAR * SMALLBODYSCALE,
-                            color = color.red)
-
-        jupiter = Body()
-        jupiter.name = 'Jupiter'
-        jupiter.mass = M_JUP
-        jupiter.lz   = L_JUP
-        jupiter.model = sphere(pos = vector(D_JUP,0,0),
-                            radius = R_JUP * LARGEBODYSCALE,
-                            color = color.green)
-
-        saturn = Body()
-        saturn.name = 'Saturn'
-        saturn.mass = M_SAT
-        saturn.lz   = L_SAT
-        saturn.model = sphere(pos = vector(D_SAT,0,0),
-                            radius = R_SAT * LARGEBODYSCALE,
-                            color = vec(1,0,1))
-
-    #    uranus = Body()
-    #    uranus.name = 'Uranus'
-    #    uranus.mass = M_URA
-    #    uranus.lz   = L_URA
-    #    uranus.model = sphere(pos = vector(D_URA,0,0),
-    #                         radius = R_URA * LARGEBODYSCALE,
-    #                         color = color.white)
-    #
-        # Note, Neptune appears to be quite far away. this makes relative
-        # sizes very small
-    #    neptune = Body()
-    #    neptune.name = 'Neptune'
-    #    neptune.mass = M_NEP
-    #    neptune.lz   = L_NEP
-    #    neptune.model = sphere(pos = vector(D_NEP,0,0),
-    #                         radius = R_NEP * LARGEBODYSCALE,
-    #                         color = color.blue)
-    #
-    """
-
-    loop([mercury, venus, earth])
+    loop([mercury, venus, earth, mars, jupiter, saturn, uranus, neptune])
 
 if __name__ == '__main__':
     main()
