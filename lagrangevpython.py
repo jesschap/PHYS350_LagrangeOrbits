@@ -1,5 +1,6 @@
 # pylama:ignore=W391,E231,E251,E303,E221,E272
 
+import pdb
 import math
 from vpython import *
 
@@ -89,56 +90,51 @@ class Body:
         self.ecc   = ecc
 
 
-    def compute_motion(planet):
-        print("im here")
-        """
-        planet: the planet to compute motion of
+def compute_motion(planet):
+    """
+    planet: the planet to compute motion of
 
-        This finds the new angle and distance of a planet from the sun
-        """
+    This finds the new angle and distance of a planet from the sun
+    """
 
-        print("im here")
-        sleep(1)
+    # The sun should never be passed as a parameter for this calculation
+    if planet.name == 'Sun':
+        raise ValueError()
 
-        # The sun should never be passed as a parameter for this calculation
-        if planet.name == 'Sun':
-            raise ValueError()
+    # Reduced mass constant
+    u = (M_SUN * planet.mass) / (M_SUN + planet.mass)
 
-        print("bonjour")
+    # Constant c value for the r(phi) function
+    c = (planet.lz)**2 / (G * M_SUN * planet.mass * u)
 
-        # Reduced mass constant
-        u = (M_SUN * planet.mass) / (M_SUN + planet.mass)
+    # Get the new planet angle
+    d_angle = planet.lz / (u * planet.dist**2)
+    planet.angle = planet.angle + d_angle
 
-        # Constant c value for the r(phi) function
-        c = (planet.lz)**2 / (G * M_SUN * planet.mass * u)
+    # Get the new planet distance
+    planet.dist = c / (1 + planet.ecc * math.cos(planet.angle))
 
-        # Get the new planet angle
-        d_angle = planet.lz / (u * dist**2)
-        planet.angle = planet.angle + d.angle
+    pdb.set_trace()
 
-        # Get the new planet distance
-        planet.dist = c / (1 + planet.ecc * math.cos(planet.angle))
+    # Update the vpython simulation
+    update_vmodel(planet)
 
-        # Update the vpython simulation
-        update_vmodel(planet)
+def update_vmodel(planet):
+    """
+    planet: the planet to update vpython model of
 
-    def update_vmodel(planet):
-        """
-        planet: the planet to update vpython model of
+    Update the vpython model of the planet by computing its x and y
+    position from distance and angle.
+    """
+    x = planet.dist * math.cos(planet.angle)
+    y = planet.dist * math.sin(planet.angle)
 
-        Update the vpython model of the planet by computing its x and y
-        position from distance and angle.
-        """
-        x = planet.dist * math.cos(planet.angle)
-        y = planet.dist * math.sin(planet.angle)
+    print(x)
+    print(y)
+    sleep(1)
 
-        print(planet.name)
-        print(x)
-        print(y)
-        sleep(1)
-
-        # Assign the model position in x and y, assume it is at z = 0
-        planet.model = vector(x, y, 0)
+    # Assign the model position in x and y, assume it is at z = 0
+    planet.model = vector(x, y, 0)
 
 def loop(bodies):
     """([Body])
@@ -151,8 +147,6 @@ def loop(bodies):
     while True:
         sleep(0.0001)
         for body in bodies:
-            print(body.name)
-            sleep(1)
             compute_motion(body)
 
 
