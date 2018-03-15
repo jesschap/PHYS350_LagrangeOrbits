@@ -4,6 +4,13 @@ import pdb
 import math
 from vpython import *
 
+# Simulation timestep, increasing this number
+# will make the simulation run faster. Timestep
+# currently set to a day. Note the sleep value is
+# set to 0.1ms, which means that relative to a real second,
+# the simulation will operate at timestep * 10000 seconds.
+timestep = 24 * 3600
+
 # Gravitational constant
 G = 6.67428e-11
 
@@ -12,7 +19,7 @@ AU = 149.6e6 * 1000  # 149.6 million km, in meters.
 
 # Scale factor for planets size so that they're visible relative to the large
 # distances between them.
-SUNSCALE = 70  # For use by Sun, it's too large
+SUNSCALE = 50  # For use by Sun, it's too large
 LARGEBODYSCALE = 500  # For use by the giants, they're too large
 SMALLBODYSCALE = 2000 # For use by other planets
 
@@ -108,13 +115,13 @@ def compute_motion(planet):
     c = (planet.lz)**2 / (G * M_SUN * planet.mass * u)
 
     # Get the new planet angle
-    d_angle = planet.lz / (u * planet.dist**2)
+    d_angle = planet.lz / (u * planet.dist**2) * timestep
     planet.angle = planet.angle + d_angle
 
     # Get the new planet distance
     planet.dist = c / (1 + planet.ecc * math.cos(planet.angle))
 
-    pdb.set_trace()
+#    pdb.set_trace()
 
     # Update the vpython simulation
     update_vmodel(planet)
@@ -129,12 +136,8 @@ def update_vmodel(planet):
     x = planet.dist * math.cos(planet.angle)
     y = planet.dist * math.sin(planet.angle)
 
-    print(x)
-    print(y)
-    sleep(1)
-
     # Assign the model position in x and y, assume it is at z = 0
-    planet.model = vector(x, y, 0)
+    planet.model.pos = vector(x, y, 0)
 
 def loop(bodies):
     """([Body])
@@ -143,7 +146,9 @@ def loop(bodies):
     positions of all the provided bodies.
     """
 
-    print("beginning")
+
+    print("Beginning simulation loop...")
+
     while True:
         sleep(0.0001)
         for body in bodies:
