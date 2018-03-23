@@ -127,6 +127,8 @@ def loop(bodies):
             body.model.pos = newpos
 
 def main():
+    print("Welcome to the simulation.")
+
     sun = Body()
     sun.name = 'Sun'
     sun.mass = M_SUN

@@ -15,11 +15,11 @@ G = 6.67428e-11
 # Astronomical Unit
 AU = 149.6e6 * 1000  # 149.6 million km, in meters.
 
-# Scale factor for planets size so that they're visible relative to the large
-# distances between them.
-SUNSCALE = 50  # For use by Sun, it's too large
-LARGEBODYSCALE = 500  # For use by the giants, they're too large
-SMALLBODYSCALE = 2000 # For use by other planets
+# Scale factor for planets size so that they're visible
+# relative to the large distances between them.
+SUNSCALE = 50          # For use by Sun, it's too large
+LARGEBODYSCALE = 500   # For use by the giants, they're too large
+SMALLBODYSCALE = 2000  # For use by other planets
 
 # Masses of all the planets (kg)
 M_SUN = 1.989 * 10**30
@@ -74,6 +74,17 @@ D_SAT =  9.539 * AU
 D_URA =  19.18 * AU
 D_NEP =  30.06 * AU
 
+# Orbital tips of planets (converted from degrees to radians)
+T_MER = 7.0 * (math.pi / 180)
+T_VEN = 3.4 * (math.pi / 180)
+T_EAR = 0.0 * (math.pi / 180)
+T_MAR = 1.9 * (math.pi / 180)
+T_JUP = 1.3 * (math.pi / 180)
+T_SAT = 2.5 * (math.pi / 180)
+T_URA = 0.8 * (math.pi / 180)
+T_NEP = 1.8 * (math.pi / 180)
+
+
 class Body:
     """
     name  : name of planet
@@ -85,7 +96,7 @@ class Body:
     ecc   : eccentricity (unitless)
     """
 
-    def __init__(self, name, model, mass, angle, dist, lz, ecc):
+    def __init__(self, name, model, mass, angle, dist, lz, ecc, tip):
         self.name  = name
         self.model = model
         self.mass  = mass
@@ -93,6 +104,8 @@ class Body:
         self.dist  = dist
         self.lz    = lz
         self.ecc   = ecc
+        self.tip   = tip
+
 
 def compute_motion(planet):
     """
@@ -121,22 +134,29 @@ def compute_motion(planet):
     # Update the vpython simulation
     update_vmodel(planet)
 
+
 def update_vmodel(planet):
     """
     planet: the planet to update vpython model of
 
     Update the vpython model of the planet by computing its x and y
     position from distance and angle.
+
     """
     x = planet.dist * math.cos(planet.angle)
     y = planet.dist * math.sin(planet.angle)
 
+    # Update z component with tip formula
+    z = math.sin(-planet.tip * math.cos(planet.angle)) * planet.dist
+
     # Assign the model position in x and y, assume it is at z = 0
-    planet.model.pos = vector(x, y, 0)
+    planet.model.pos = vector(x, y, z)
+
 
 def loop(bodies):
     """
-    bodies: a list of planets that will be modelled in the potential well of the sun
+    bodies: a list of planets that will be modelled in the potential
+            well of the sun
 
     Never returns; loops through the simulation, updating the
     positions of all the provided bodies.
@@ -146,52 +166,63 @@ def loop(bodies):
         for body in bodies:
             compute_motion(body)
 
-def main():
-    #pdb.set_trace()
 
-    scene.title  ='Planet Simulation'
+def main():
+#   pdb.set_trace()
+
+    scene.title  = 'Planet Simulation'
     scene.width  = 1100
     scene.height = 700
 
-    sunmodel = sphere(pos = vector(0,0,0),
-                      radius = R_SUN * SUNSCALE,
-                      color = color.yellow)
-    mercurymodel = sphere(pos = vector(D_MER,0,0),
-                           radius = R_MER * SMALLBODYSCALE,
-                           color = vec(1,1,1))
-    venusmodel = sphere(pos = vector(D_VEN,0,0),
-                         radius = R_VEN * SMALLBODYSCALE,
-                         color = color.orange)
-    earthmodel = sphere(pos = vector(D_EAR,0,0),
-                         radius = R_EAR * SMALLBODYSCALE,
-                         color = color.blue)
-    marsmodel = sphere(pos = vector(D_MAR,0,0),
-                        radius = R_MAR * SMALLBODYSCALE,
-                        color = color.red)
-    jupitermodel = sphere(pos = vector(D_JUP,0,0),
-                        radius = R_JUP * LARGEBODYSCALE,
-                        color = color.green)
-    saturnmodel = sphere(pos = vector(D_SAT,0,0),
-                        radius = R_SAT * LARGEBODYSCALE,
-                        color = vec(1,0,1))
-    uranusmodel = sphere(pos = vector(D_URA,0,0),
-                         radius = R_URA * LARGEBODYSCALE,
-                         color = color.white)
-    neptunemodel = sphere(pos = vector(D_NEP,0,0),
-                         radius = R_NEP * LARGEBODYSCALE,
-                         color = color.blue)
+    zplane = box(pos     = vector(0,0,0),
+                 color   = color.white,
+                 length  = D_NEP,
+                 height  = D_NEP,
+                 width   = R_SUN / 10,
+                 opacity = 0.5)
 
-    sun     = Body('Sun', sunmodel, M_SUN, 0, 0, 0, 0)
-    mercury = Body('Mercury', mercurymodel, M_MER, 0, D_MER, L_MER, E_MER)
-    venus   = Body('Venus', venusmodel, M_VEN, 0, D_VEN, L_VEN, E_VEN)
-    earth   = Body('Earth', earthmodel, M_EAR, 0, D_EAR, L_EAR, E_EAR)
-    mars    = Body('Mars', marsmodel, M_MAR, 0, D_MAR, L_MAR, E_MAR)
-    jupiter = Body('Jupiter', jupitermodel, M_JUP, 0, D_JUP, L_JUP, E_JUP)
-    saturn  = Body('Saturn', saturnmodel, M_SAT, 0, D_SAT, L_SAT, E_SAT)
-    uranus  = Body('Uranus', uranusmodel, M_URA, 0, D_URA, L_URA, E_URA)
-    neptune = Body('Neptune', neptunemodel, M_NEP, 0, D_NEP, L_NEP, E_NEP)
+    # Initialize all of the vpython models
+    sunmodel     = sphere(pos = vector(0,0,0),
+                          radius = R_SUN * SUNSCALE,
+                          color = color.yellow)
+    mercurymodel = sphere(pos = vector(D_MER,0,0),
+                          radius = R_MER * SMALLBODYSCALE,
+                          color = vec(1,1,1))
+    venusmodel   = sphere(pos = vector(D_VEN,0,0),
+                          radius = R_VEN * SMALLBODYSCALE,
+                          color = color.orange)
+    earthmodel   = sphere(pos = vector(D_EAR,0,0),
+                          radius = R_EAR * SMALLBODYSCALE,
+                          color = color.blue)
+    marsmodel    = sphere(pos = vector(D_MAR,0,0),
+                          radius = R_MAR * SMALLBODYSCALE,
+                          color = color.red)
+    jupitermodel = sphere(pos = vector(D_JUP,0,0),
+                          radius = R_JUP * LARGEBODYSCALE,
+                          color = color.green)
+    saturnmodel  = sphere(pos = vector(D_SAT,0,0),
+                          radius = R_SAT * LARGEBODYSCALE,
+                          color = vec(1,0,1))
+    uranusmodel  = sphere(pos = vector(D_URA,0,0),
+                          radius = R_URA * LARGEBODYSCALE,
+                          color = color.white)
+    neptunemodel = sphere(pos = vector(D_NEP,0,0),
+                          radius = R_NEP * LARGEBODYSCALE,
+                          color = color.blue)
+
+    # Initialize all of the planet objects
+    sun     = Body('Sun', sunmodel, M_SUN, 0, 0, 0, 0, 0)
+    mercury = Body('Mercury', mercurymodel, M_MER, 0, D_MER, L_MER, E_MER, T_MER)
+    venus   = Body('Venus', venusmodel, M_VEN, 0, D_VEN, L_VEN, E_VEN, T_VEN)
+    earth   = Body('Earth', earthmodel, M_EAR, 0, D_EAR, L_EAR, E_EAR, T_EAR)
+    mars    = Body('Mars', marsmodel, M_MAR, 0, D_MAR, L_MAR, E_MAR, T_MAR)
+    jupiter = Body('Jupiter', jupitermodel, M_JUP, 0, D_JUP, L_JUP, E_JUP, T_JUP)
+    saturn  = Body('Saturn', saturnmodel, M_SAT, 0, D_SAT, L_SAT, E_SAT, T_SAT)
+    uranus  = Body('Uranus', uranusmodel, M_URA, 0, D_URA, L_URA, E_URA, T_URA)
+    neptune = Body('Neptune', neptunemodel, M_NEP, 0, D_NEP, L_NEP, E_NEP, T_NEP)
 
     loop([mercury, venus, earth, mars, jupiter, saturn, uranus, neptune])
+
 
 if __name__ == '__main__':
     main()
