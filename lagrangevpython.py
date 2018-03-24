@@ -31,8 +31,6 @@ M_JUP = 1.898 * 10**27
 M_SAT = 5.68  * 10**26
 M_URA = 8.68  * 10**25
 M_NEP = 1.02  * 10**26
-M_AST1 = 2.2   * 10**14
-M_AST2 = 10   * 10**14
 
 # Radiuses of all the bodies (m)
 R_SUN = 696000 * 10**3
@@ -44,8 +42,6 @@ R_JUP = 71492  * 10**3
 R_SAT = 60268  * 10**3
 R_URA = 25559  * 10**3
 R_NEP = 24764  * 10**3
-R_AST1 = 10000    * 10**3
-R_AST2 = 20000    * 10**3
 
 # Eccentricities of planets (unitless)
 E_SUN = 0.000
@@ -101,6 +97,11 @@ T_URA = 0.8 * (math.pi / 180)
 T_NEP = 1.8 * (math.pi / 180)
 
 # Asteroid Data
+M_AST1 = 2.2 * 10**14
+M_AST2 = 10  * 10**14
+
+R_AST1 = 10000 * 10**3
+R_AST2 = 20000 * 10**3
 
 E_AST1 = 1.0
 E_AST2 = 0.6
@@ -215,54 +216,58 @@ def compute_forces(ast,bodies):
     #Updates positions of asteroids in simulation
     ast.model.pos = vector(ast.px,ast.py,0)
 
-def compute_motion(planet):
+def compute_motion(body):
     """
-    planet: the planet to compute motion of
+    body: the body to compute the motion of
 
-    This finds the new angle and distance of a planet from the sun
+    This finds the new angle and distance of a body from the center of
+    the system's mass
     """
 
-    # The sun should never be passed as a parameter for this calculation so skip it
-    if planet.name == 'Sun':
-        return
+    # Compute this assuming the sun is the main mass
+    M_OBJ = M_SUN
+
+    # If computing motion of sun, use Jupiter as its mass
+    if body.name == 'Sun':
+        M_OBJ = M_JUP
 
     # Reduced mass constant
-    u = (M_SUN * planet.mass) / (M_SUN + planet.mass)
+    u = (M_OBJ * body.mass) / (M_OBJ + body.mass)
 
     # Constant c value for the r(phi) function
-    c = (planet.lz)**2 / (G * M_SUN * planet.mass * u)
+    c = (body.lz)**2 / (G * M_OBJ * body.mass * u)
 
-    # Get the new planet angle
-    d_angle = planet.lz / (u * planet.dist**2) * timestep
-    planet.angle = planet.angle + d_angle
+    # Get the new body angle
+    d_angle = body.lz / (u * body.dist**2) * timestep
+    body.angle = body.angle + d_angle
 
-    # Get the new planet distance
-    planet.dist = c / (1 + planet.ecc * math.cos(planet.angle))
+    # Get the new body distance
+    body.dist = c / (1 + body.ecc * math.cos(body.angle))
 
     # Update the vpython simulation
-    update_vmodel(planet)
+    update_vmodel(body)
 
 
-def update_vmodel(planet):
+def update_vmodel(body):
     """
-    planet: the planet to update vpython model of
+    body: the body to update vpython model of
 
-    Update the vpython model of the planet by computing its x and y
+    Update the vpython model of the body by computing its x and y
     position from distance and angle.
 
     """
-    x = planet.dist * math.cos(planet.angle)
-    y = planet.dist * math.sin(planet.angle)
+    x = body.dist * math.cos(body.angle)
+    y = body.dist * math.sin(body.angle)
 
     # Update z component with tip formula
-    z = math.sin(-planet.tip * math.cos(planet.angle)) * planet.dist
+    z = math.sin(-body.tip * math.cos(body.angle)) * body.dist
 
     # Assign the model position in x and y, assume it is at z = 0
-    planet.model.pos = vector(x, y, z)
+    body.model.pos = vector(x, y, z)
 
 def loop(bodies, asteroids):
     """
-    bodies: a list of planets that will be modelled in the potential
+    bodies: a list of bodies that will be modelled in the potential
             well of the sun
 
     Never returns; loops through the simulation, updating the
@@ -325,12 +330,12 @@ def main():
                           radius = R_NEP * LARGEBODYSCALE,
                           color  = color.blue)
 
-    asteroidmodel1 = sphere(pos   = vector(D_AST1,D_AST1,0),
-                           radius = R_AST1 * LARGEBODYSCALE,
-                           color  = color.cyan, make_trail=True, retain = 500)
-    asteroidmodel2 = sphere(pos   = vector(D_AST2,D_AST2,0),
-                           radius = R_AST2 * LARGEBODYSCALE,
-                           color  = color.cyan, make_trail=True, retain = 500)
+    asteroidmodel1 = sphere(pos    = vector(D_AST1,D_AST1,0),
+                            radius = R_AST1 * LARGEBODYSCALE,
+                            color  = color.cyan, make_trail=True, retain = 500)
+    asteroidmodel2 = sphere(pos    = vector(D_AST2,D_AST2,0),
+                            radius = R_AST2 * LARGEBODYSCALE,
+                            color  = color.cyan, make_trail=True, retain = 500)
 
     # Initialize all of the planet objects
     sun     = Body('Sun',     sunmodel,     M_SUN, 0,     D_SUN, L_SUN, E_SUN, 0)
