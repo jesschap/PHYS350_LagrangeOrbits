@@ -114,7 +114,7 @@ R_AST2 = 20000 * 10**3
 E_AST1 = 1.0
 E_AST2 = 0.6
 
-D_AST = 20.0 * AU
+D_AST = 40.0 * AU
 D_AST1 =  12.0 * AU
 D_AST2 =  10.0 * AU
 
@@ -153,16 +153,18 @@ class Asteroid:
     px, py: x,y positions in m
     """
 
-    def __init__(self, name, model, mass, angle,vx, vy, px, py):
+    def __init__(self, name, mass, angle, vx, vy, px, py):
         self.name  = name
-        self.model = model
         self.mass  = mass
         self.angle = angle
         self.vx    = vx
         self.vy    = vy
         self.px    = px
         self.py    = py
-        
+        self.model = asteroidmodel1 = sphere(pos    = vector(px,py,0),
+                                radius = R_AST1 * LARGEBODYSCALE,
+                                color  = color.cyan, make_trail=True, retain = 500)
+
     def attraction(self, other):
         """(Body): (fx, fy)
 
@@ -280,25 +282,20 @@ def loop(bodies, asteroids):
     """
     count = 3
     while True:
-#        if count%100 == 0:
-#            print('here')
-#            newAsteroidModel = sphere(pos = vector(D_AST*float(0.4+rand()), D_AST*float(0.4+rand()), 0),
-#                                      radius = R_AST1 * LARGEBODYSCALE,
-#                                      color  = color.cyan, make_trail=True, retain = 500)
-#            print('here1')
-#            newAsteroid = Asteroid('Asteroid'+str(count),newAsteroidModel, 
-#                                       M_AST*float(randint(0,10)+rand()), 0, 10000*float(rand()),10000*float(rand()), 
-#                                       D_AST*float(0.4+rand()),D_AST*float(0.4+rand()))
-#            print('here2')
-#            asteroids.append(newAsteroid) 
-#            print('here3')
-        sleep(0.0001)     
+        if count%100 == 0:
+            newAsteroidModel = sphere(pos = vector(D_AST*float(0.4+rnd.uniform(-1,1)), D_AST*float(0.4+rnd.uniform(-1,1)), 0),
+                                      radius = R_AST1 * LARGEBODYSCALE,
+                                      color  = color.cyan, make_trail=True, retain = 500)
+            newAsteroid = Asteroid('Asteroid'+str(count),
+                                       M_AST*float(rnd.randint(0,10)+rnd.uniform(-1,1)), 0, 10000*float(rnd.uniform(-1,1)),10000*float(rnd.uniform(-1,1)),
+                                       D_AST*float(0.4+rnd.uniform(-1,1)),D_AST*float(0.4+rnd.uniform(-1,1)))
+            asteroids.append(newAsteroid)
+        sleep(0.0001)
         for body in bodies:
             compute_motion(body)
         for ast in asteroids:
             compute_forces(ast,bodies)
         count += 1
-        print(count)
 def main():
 #   pdb.set_trace()
 
@@ -347,13 +344,6 @@ def main():
                           radius = R_NEP * LARGEBODYSCALE,
                           color  = color.blue)
 
-    asteroidmodel1 = sphere(pos    = vector(D_AST1,D_AST1,0),
-                            radius = R_AST1 * LARGEBODYSCALE,
-                            color  = color.cyan, make_trail=True, retain = 500)
-    asteroidmodel2 = sphere(pos    = vector(D_AST2,D_AST2,0),
-                            radius = R_AST2 * LARGEBODYSCALE,
-                            color  = color.cyan, make_trail=True, retain = 500)
-
     # Initialize all of the planet objects
     sun     = Body('Sun',     sunmodel,     M_SUN, 0,     D_SUN, L_SUN, E_SUN, 0)
     mercury = Body('Mercury', mercurymodel, M_MER, P_MER, D_MER, L_MER, E_MER, T_MER)
@@ -365,9 +355,9 @@ def main():
     uranus  = Body('Uranus',  uranusmodel,  M_URA, P_URA, D_URA, L_URA, E_URA, T_URA)
     neptune = Body('Neptune', neptunemodel, M_NEP, P_NEP, D_NEP, L_NEP, E_NEP, T_NEP)
     #(name, model, mass, angle,vx, vy, px, py)
-    #10000.0*float(rand())
-    asteroid1 = Asteroid('Asteroid1', asteroidmodel1, M_AST1, 0, 5000.0*float(rand()),0, D_AST,D_AST1)
-    asteroid2 = Asteroid('Asteroid2', asteroidmodel2, M_AST2, 0, -4000.0*float(rand()), 0, -D_AST2,-D_AST2)
+    #10000.0*float(rnd.uniform(-1,1))
+    asteroid1 = Asteroid('Asteroid1', M_AST1, 0, 5000.0,0, D_AST,D_AST1)
+    asteroid2 = Asteroid('Asteroid2', M_AST2, 0, -4000.0, 0, -D_AST2,-D_AST2)
 
     loop([mercury, venus,sun, earth, mars, jupiter,saturn, uranus, neptune], [asteroid1, asteroid2])
 

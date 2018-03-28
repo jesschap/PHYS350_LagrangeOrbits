@@ -18,7 +18,7 @@ AU = 149.6e6 * 1000
 # Scale factor for planets size so that they're visible
 # relative to the large distances between them.
 SUNSCALE = 50          # For use by Sun, it's too large
-LARGEBODYSCALE = 500   # For use by the giants, they're too large
+LARGEBODYSCALE = 2000   # For use by the giants, they're too large
 SMALLBODYSCALE = 2000  # For use by other planets
 
 # Masses of all the planets (kg)
@@ -136,34 +136,31 @@ class Body:
 
 class Asteroid:
     """
-    name  : name of planet
-    model : vpython model of planet
+    name  : name of asteroid
+    model : vpython model of asteroid
     mass  : mass (kg)
-    angle : planet angle from reference (radians)
-    dist  : distance to sun (m)
-    lz    : z angular momentum (kgm^2/s)
-    ecc   : eccentricity (unitless)
     vx, vy: x, y velocities in m/s
-    px, py: x,y positions in m
+    px, py: x,y positions in m from the center of mass of system
     """
 
     def __init__(self, name, model, mass, angle, dist, lz, ecc, vx, vy, px, py):
         self.name  = name
         self.model = model
         self.mass  = mass
-        self.angle = angle
-        self.dist  = dist
-        self.lz    = lz
-        self.ecc   = ecc
         self.vx    = vx
         self.vy    = vy
         self.px    = px
         self.py    = py
 
     def attraction(self, other):
-        """(Body): (fx, fy)
+        """
+        Returns forces exerted in x,y components of body: (fx, fy)
 
-        Returns the force exerted upon this body by the other body.
+        This uses the non-Lagrangian method of computing a force of attraction
+        This is the method we use to compute the forces and new positions for
+        the asteroids, which, as they traverse space, will feel the pull from objects
+        around them
+
         """
         # Report an error if the other object is the same as this one.
         if self is other:
@@ -174,19 +171,20 @@ class Asteroid:
         sx, sy = self.px, self.py
         #print("Asteroid x pos: %f" %(sx/AU))
         #print("Asteroid y pos: %f" %(sy/AU))
-        ox, oy = other.dist*math.cos(other.angle), other.dist*math.sin(other.angle)
-        dx = (ox-sx)
-        dy = (oy-sy)
-        d = math.sqrt(dx**2 + dy**2)
+        ox = other.dist * math.cos(other.angle)
+        oy = other.dist * math.sin(other.angle)
+        dx = ox-sx
+        dy = oy-sy
+        d  = math.sqrt(dx**2 + dy**2)
 
-        # Report an error if the distance is zero cuz u
-        # get a ZeroDivisionError exception further down.
+        # Report an error if the distance is zero because it
+        # causes a ZeroDivisionError exception further down.
         if d == 0:
             raise ValueError("Collision between objects %r and %r"
                              % (self.name, other.name))
 
         # Compute the force of attraction
-        f = G * self.mass * other.mass / (d**2)
+        f = G * self.mass * other.mass / d**2
 
         # Compute the direction of the force.
         theta = math.atan2(dy, dx)
@@ -196,11 +194,12 @@ class Asteroid:
 
         return fx, fy
 
-def compute_forces(ast,bodies):
+def compute_forces(ast, bodies):
 
     total_fx = total_fy = 0.0
+
+    # Add up all of the forces exerted on the asteroid
     for body in bodies:
-        # Add up all of the forces exerted on 'body'.
         fx, fy = ast.attraction(body)
         total_fx += fx
         total_fy += fy
@@ -213,7 +212,7 @@ def compute_forces(ast,bodies):
     ast.px += ast.vx * timestep
     ast.py += ast.vy * timestep
 
-    #Updates positions of asteroids in simulation
+    # Updates positions of asteroids in simulation
     ast.model.pos = vector(ast.px,ast.py,0)
 
 def compute_motion(body):
@@ -221,7 +220,7 @@ def compute_motion(body):
     body: the body to compute the motion of
 
     This finds the new angle and distance of a body from the center of
-    the system's mass
+    the system's mass using the Lagrangian equations
     """
 
     # Compute this assuming the sun is the main mass
