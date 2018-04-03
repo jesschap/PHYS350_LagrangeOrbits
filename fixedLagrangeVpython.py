@@ -282,7 +282,7 @@ def loop(bodies, asteroids):
     """
     count = 3
     while True:
-        if count%100 == 0:
+        if count%100 == 0 and count <= 500:
             newAsteroidModel = sphere(pos = vector(D_AST*float(0.4+rnd.uniform(-1,1)), D_AST*float(0.4+rnd.uniform(-1,1)), 0),
                                       radius = R_AST1 * LARGEBODYSCALE,
                                       color  = color.cyan, make_trail=True, retain = 500)
