@@ -16,6 +16,7 @@ from vpython import *
 # the simulation will operate at timestep * 10000 seconds.
 timestep = 24 * 3600 * 30
 
+collisions = 0
 # Gravitational constant
 G = 6.67428e-11
 
@@ -187,8 +188,8 @@ class Asteroid:
         # Report an error if the distance is zero cuz u
         # get a ZeroDivisionError exception further down.
         if d <= AU*0.5 and other.name == 'Earth':
-            raise ValueError("Collision between objects %r and %r"
-                             % (self.name, other.name))
+            global collisions
+            collisions += 1
 
         # Compute the force of attraction
         f = G * self.mass * other.mass / (d**2)
@@ -280,16 +281,15 @@ def loop(bodies, asteroids):
     Never returns; loops through the simulation, updating the
     positions of all the provided bodies.
     """
-    count = 3
+    count = 0
     while True:
         if count % 10 == 0:
             # Print the years lapsed with commas to separate 3's of digits.
-            scene.title  = 'Planet Simulation: ' + str("{:,d}".format(int(timestep*count/365))) + ' years'
+            scene.title  = 'Planet Simulation: ' + str("{:,d}".format(int(timestep*count/(3*10**7))) + 
+                                                       ' years' + '   Collisions: ' +str(collisions) +
+                                                       '   Number of Local Asteroids: ' +str(len(asteroids)))
 #            print(str("{:,d}".format(int(timestep*count/365))) + ' years')
-#        if count%100 == 0 and count <= 500:
-##            newAsteroidModel = sphere(pos = vector(D_AST*float(0.4+rnd.uniform(-1,1)), D_AST*float(0.4+rnd.uniform(-1,1)), 0),
-##                                      radius = R_AST1 * LARGEBODYSCALE,
-##                                      color  = color.cyan, make_trail=True, retain = 500)
+        if count%100 == 0:
             newAsteroid = Asteroid('Asteroid'+str(count),
                                        M_AST*float(rnd.randint(0,10)+rnd.uniform(-1,1)), 0, 10000*float(rnd.uniform(-1,1)),10000*float(rnd.uniform(-1,1)),
                                        (30*AU+rnd.randint(-3,3))*(-1)**rnd.randrange(2),(D_AST+rnd.randint(-3,3))*(-1)**rnd.randrange(2))
@@ -298,6 +298,10 @@ def loop(bodies, asteroids):
         for body in bodies:
             compute_motion(body)
         for ast in asteroids:
+            if abs(ast.px) > 100*AU or abs(ast.py) > 100*AU:
+                ast.model.retain = 0
+                asteroids.remove(ast)
+                continue
             compute_forces(ast,bodies)
         count += 1
 def main():
@@ -333,7 +337,7 @@ def main():
                           radius = R_EAR * SMALLBODYSCALE,
                           texture={'file':textures.earth},
                           make_trail = True,
-                          retain = 50)
+                          retain = 5)
     marsmodel    = sphere(pos    = vector(D_MAR,0,0),
                           radius = R_MAR * SMALLBODYSCALE,
                           texture={'file':textures.stucco},
@@ -382,7 +386,7 @@ def main():
     asteroid9 = Asteroid('Asteroid9', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 7000.0*rnd.uniform(-1,-0.5),7000.0*rnd.uniform(0.5,1), 27*AU,-30*AU)
     asteroid10= Asteroid('Asteroid10', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)),0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(0.5,1), 30*AU,-27*AU) 
 
-    loop([mercury, venus,sun, earth, mars,jupiter,saturn, uranus, neptune], [asteroid1,asteroid2])
+    loop([mercury, venus,sun, earth, mars,jupiter,saturn, uranus, neptune], [])
 
 if __name__ == '__main__':
     main()
