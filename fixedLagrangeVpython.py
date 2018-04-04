@@ -9,12 +9,13 @@ import math
 import random as rnd
 from vpython import *
 
+
 # Simulation timestep, increasing this number
 # will make the simulation run faster. Timestep
 # currently set to a day. Note the sleep value is
 # set to 0.1ms, which means that relative to a real second,
 # the simulation will operate at timestep * 10000 seconds.
-timestep = 24 * 3600 * 30
+timestep = 24 * 3600
 
 # Gravitational constant
 G = 6.67428e-11
@@ -282,7 +283,10 @@ def loop(bodies, asteroids):
     """
     count = 0
     while True:
-#        text(text=str(timestep*count/365)+" years", pos = vector(0,20*AU,0))
+        if count % 10 == 0:
+            # Print the years lapsed with commas to separate 3's of digits.
+            scene.title  = 'Planet Simulation: ' + str("{:,d}".format(int(timestep*count/365))) + ' years'
+#            print(str("{:,d}".format(int(timestep*count/365))) + ' years')
 #        if count%100 == 0 and count <= 500:
 ##            newAsteroidModel = sphere(pos = vector(D_AST*float(0.4+rnd.uniform(-1,1)), D_AST*float(0.4+rnd.uniform(-1,1)), 0),
 ##                                      radius = R_AST1 * LARGEBODYSCALE,
@@ -303,7 +307,6 @@ def main():
     scene.title  = 'Planet Simulation'
     scene.width  = 1100
     scene.height = 700
-    #text(text='Years', align = 'center')
     # Inserting this ugly plane will help us see orientation better. We
     # can likely read input from user to toggle this plane on/off by setting
     # it's opacity level
@@ -317,7 +320,6 @@ def main():
     # Initialize all of the vpython models
     sunmodel     = sphere(pos    = vector(D_SUN,0,0),
                           radius = R_SUN * SUNSCALE,
-                          texture={'file':textures.flower},
                           color  = color.yellow)
     mercurymodel = sphere(pos    = vector(D_MER,0,0),
                           radius = R_MER * SMALLBODYSCALE,
@@ -333,18 +335,23 @@ def main():
                           retain = 50)
     marsmodel    = sphere(pos    = vector(D_MAR,0,0),
                           radius = R_MAR * SMALLBODYSCALE,
+                          texture={'file':textures.stucco},
                           color  = color.red)
     jupitermodel = sphere(pos    = vector(D_JUP,0,0),
                           radius = R_JUP * LARGEBODYSCALE,
+                          texture={'file':textures.stucco},
                           color  = color.green)
     saturnmodel  = sphere(pos    = vector(D_SAT,0,0),
                           radius = R_SAT * LARGEBODYSCALE,
+                          texture={'file':textures.stucco},
                           color  = vec(1,0,1))
     uranusmodel  = sphere(pos    = vector(D_URA,0,0),
                           radius = R_URA * LARGEBODYSCALE,
+                          texture={'file':textures.stucco},
                           color  = color.white)
     neptunemodel = sphere(pos    = vector(D_NEP,0,0),
                           radius = R_NEP * LARGEBODYSCALE,
+                          texture={'file':textures.stucco},
                           color  = color.blue)
 
     # Initialize all of the planet objects
@@ -372,7 +379,7 @@ def main():
     asteroid8 = Asteroid('Asteroid8', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(0.5,1),17000.0*rnd.uniform(0.5,1), -30*AU,-25*AU)
     #4th Quadrant -> negative vx and positive vy
     asteroid9 = Asteroid('Asteroid9', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(0.5,1), 27*AU,-30*AU)
-    asteroid10= Asteroid('Asteroid10', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)),0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(0.5,1), 30*AU,-27*AU) 
+    asteroid10= Asteroid('Asteroid10', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)),0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(0.5,1), 30*AU,-27*AU)
 
     loop([mercury, venus,sun, earth, mars,jupiter,saturn, uranus, neptune], [asteroid3,asteroid4,asteroid5,asteroid6,asteroid7,asteroid8,asteroid9,asteroid10])
 
