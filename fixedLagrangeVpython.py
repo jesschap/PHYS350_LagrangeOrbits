@@ -163,7 +163,7 @@ class Asteroid:
         self.py    = py
         self.model = asteroidmodel1 = sphere(pos    = vector(px,py,0),
                                 radius = R_AST1 * LARGEBODYSCALE,
-                                color  = color.cyan, make_trail=True, retain = 10)
+                                color  = color.cyan, make_trail=True, retain = 100)
 
     def attraction(self, other):
         """(Body): (fx, fy)
@@ -186,7 +186,7 @@ class Asteroid:
 
         # Report an error if the distance is zero cuz u
         # get a ZeroDivisionError exception further down.
-        if d == 0:
+        if d <= AU*0.5 and other.name == 'Earth':
             raise ValueError("Collision between objects %r and %r"
                              % (self.name, other.name))
 
@@ -280,17 +280,17 @@ def loop(bodies, asteroids):
     Never returns; loops through the simulation, updating the
     positions of all the provided bodies.
     """
-    count = 0
+    count = 3
     while True:
 #        text(text=str(timestep*count/365)+" years", pos = vector(0,20*AU,0))
-#        if count%100 == 0 and count <= 500:
+        if count%100 == 0 and count <= 10000:
 ##            newAsteroidModel = sphere(pos = vector(D_AST*float(0.4+rnd.uniform(-1,1)), D_AST*float(0.4+rnd.uniform(-1,1)), 0),
 ##                                      radius = R_AST1 * LARGEBODYSCALE,
 ##                                      color  = color.cyan, make_trail=True, retain = 500)
-#            newAsteroid = Asteroid('Asteroid'+str(count),
-#                                       M_AST*float(rnd.randint(0,10)+rnd.uniform(-1,1)), 0, 10000*float(rnd.uniform(-1,1)),10000*float(rnd.uniform(-1,1)),
-#                                       D_AST*float(0.5+rnd.uniform(-1,1)),D_AST*float(0.5+rnd.uniform(-1,1)))
-#            asteroids.append(newAsteroid)
+            newAsteroid = Asteroid('Asteroid'+str(count),
+                                       M_AST*float(rnd.randint(0,10)+rnd.uniform(-1,1)), 0, 10000*float(rnd.uniform(-1,1)),10000*float(rnd.uniform(-1,1)),
+                                       (30*AU+rnd.randint(-3,3))*(-1)**rnd.randrange(2),(D_AST+rnd.randint(-3,3))*(-1)**rnd.randrange(2))
+            asteroids.append(newAsteroid)
         sleep(0.0001)
         for body in bodies:
             compute_motion(body)
@@ -359,22 +359,22 @@ def main():
     neptune = Body('Neptune', neptunemodel, M_NEP, P_NEP, D_NEP, L_NEP, E_NEP, T_NEP)
     #(name, model, mass, angle,vx, vy, px, py)
     #10000.0*float(rnd.uniform(-1,1))
-    asteroid1 = Asteroid('Asteroid1', M_AST1, 0, -5000.0,-2000, 30*AU, 30*AU)
-    asteroid2 = Asteroid('Asteroid2', M_AST2, 0, 8000.0, 3000, -30*AU,-30*AU)
+    asteroid1 = Asteroid('Asteroid1', M_AST1, 0, -5000.0,0, 10*AU, 10*AU)
+    asteroid2 = Asteroid('Asteroid2', M_AST2, 0, 3000, 0, -10,-10*AU)
     #First quadrant-> negative vx and vy
-    asteroid3 = Asteroid('Asteroid3', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(-1,-0.5), 20*AU,30*AU)
+    asteroid3 = Asteroid('Asteroid3', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 7000.0*rnd.uniform(-1,-0.5),7000.0*rnd.uniform(-1,-0.5), 20*AU,30*AU)
     asteroid4 = Asteroid('Asteroid4', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(-1,-0.5), 30*AU,20*AU)
     #Second Quadrant -> positive vx and negative vy
-    asteroid5 = Asteroid('Asteroid5', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(0.5,1),17000.0*rnd.uniform(-1,-0.5), -20*AU,30*AU)
+    asteroid5 = Asteroid('Asteroid5', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 7000.0*rnd.uniform(0.5,1),7000.0*rnd.uniform(-1,-0.5), -20*AU,30*AU)
     asteroid6 = Asteroid('Asteroid6', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(0.5,1),17000.0*rnd.uniform(-1,-0.5), -30*AU,20*AU)
     #Third Quadrant -> positive vx and vy
-    asteroid7 = Asteroid('Asteroid7', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(0.5,1),17000.0*rnd.uniform(0.5,1), -25*AU,-30*AU)
+    asteroid7 = Asteroid('Asteroid7', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 7000.0*rnd.uniform(0.5,1),7000.0*rnd.uniform(0.5,1), -25*AU,-30*AU)
     asteroid8 = Asteroid('Asteroid8', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(0.5,1),17000.0*rnd.uniform(0.5,1), -30*AU,-25*AU)
     #4th Quadrant -> negative vx and positive vy
-    asteroid9 = Asteroid('Asteroid9', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(0.5,1), 27*AU,-30*AU)
+    asteroid9 = Asteroid('Asteroid9', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 7000.0*rnd.uniform(-1,-0.5),7000.0*rnd.uniform(0.5,1), 27*AU,-30*AU)
     asteroid10= Asteroid('Asteroid10', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)),0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(0.5,1), 30*AU,-27*AU) 
 
-    loop([mercury, venus,sun, earth, mars,jupiter,saturn, uranus, neptune], [asteroid3,asteroid4,asteroid5,asteroid6,asteroid7,asteroid8,asteroid9,asteroid10])
+    loop([mercury, venus,sun, earth, mars,jupiter,saturn, uranus, neptune], [asteroid1,asteroid2])
 
 if __name__ == '__main__':
     main()
