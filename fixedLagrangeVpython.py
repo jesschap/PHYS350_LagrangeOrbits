@@ -104,7 +104,7 @@ T_URA = 0.8 * (math.pi / 180)
 T_NEP = 1.8 * (math.pi / 180)
 
 # Asteroid Data
-M_AST = 10**16
+M_AST  = 10**16
 M_AST1 = 2.2 * 10**14
 M_AST2 = 10  * 10**14
 
@@ -114,9 +114,9 @@ R_AST2 = 20000 * 10**3
 E_AST1 = 1.0
 E_AST2 = 0.6
 
-D_AST = 40.0 * AU
-D_AST1 =  12.0 * AU
-D_AST2 =  10.0 * AU
+D_AST  = 40.0 * AU
+D_AST1 = 12.0 * AU
+D_AST2 = 10.0 * AU
 
 L_AST1 = M_AST1*D_AST1*5560
 L_AST2 = M_AST2*D_AST1*8000
@@ -163,7 +163,7 @@ class Asteroid:
         self.py    = py
         self.model = asteroidmodel1 = sphere(pos    = vector(px,py,0),
                                 radius = R_AST1 * LARGEBODYSCALE,
-                                color  = color.cyan, make_trail=True, retain = 500)
+                                color  = color.cyan, make_trail=True, retain = 10)
 
     def attraction(self, other):
         """(Body): (fx, fy)
@@ -316,16 +316,18 @@ def main():
     # Initialize all of the vpython models
     sunmodel     = sphere(pos    = vector(D_SUN,0,0),
                           radius = R_SUN * SUNSCALE,
+                          texture={'file':textures.flower},
                           color  = color.yellow)
     mercurymodel = sphere(pos    = vector(D_MER,0,0),
                           radius = R_MER * SMALLBODYSCALE,
                           color  = vec(1,1,1))
     venusmodel   = sphere(pos    = vector(D_VEN,0,0),
                           radius = R_VEN * SMALLBODYSCALE,
+                          texture={'file':textures.stucco},
                           color  = color.orange)
     earthmodel   = sphere(pos    = vector(D_EAR,0,0),
                           radius = R_EAR * SMALLBODYSCALE,
-                          color  = color.blue,
+                          texture={'file':textures.earth},
                           make_trail = True,
                           retain = 50)
     marsmodel    = sphere(pos    = vector(D_MAR,0,0),
@@ -359,7 +361,7 @@ def main():
     asteroid1 = Asteroid('Asteroid1', M_AST1, 0, 5000.0,0, D_AST,D_AST1)
     asteroid2 = Asteroid('Asteroid2', M_AST2, 0, -4000.0, 0, -D_AST2,-D_AST2)
 
-    loop([mercury, venus,sun, earth, mars, jupiter,saturn, uranus, neptune], [asteroid1, asteroid2])
+    loop([mercury, venus, sun, earth, mars, jupiter, saturn, uranus, neptune], [asteroid1, asteroid2])
 
 if __name__ == '__main__':
     main()
