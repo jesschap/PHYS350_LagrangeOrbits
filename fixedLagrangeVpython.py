@@ -162,7 +162,7 @@ class Asteroid:
         self.vy    = vy
         self.px    = px
         self.py    = py
-        self.model = asteroidmodel1 = sphere(pos    = vector(px,py,0),
+        self.model = sphere(pos    = vector(px,py,0),
                                 radius = R_AST1 * LARGEBODYSCALE,
                                 color  = color.cyan, make_trail=True, retain = 100)
 
@@ -272,7 +272,7 @@ def update_vmodel(body):
 
     # Assign the model position in x and y, assume it is at z = 0
     body.model.pos = vector(x, y, z)
-
+    
 def loop(bodies, asteroids):
     """
     bodies: a list of bodies that will be modelled in the potential
@@ -282,6 +282,7 @@ def loop(bodies, asteroids):
     positions of all the provided bodies.
     """
     count = 0
+    
     while True:
         if count % 10 == 0:
             # Print the years lapsed with commas to separate 3's of digits.
@@ -294,15 +295,17 @@ def loop(bodies, asteroids):
                                        M_AST*float(rnd.randint(0,10)+rnd.uniform(-1,1)), 0, 10000*float(rnd.uniform(-1,1)),10000*float(rnd.uniform(-1,1)),
                                        (30*AU+rnd.randint(-3,3))*(-1)**rnd.randrange(2),(D_AST+rnd.randint(-3,3))*(-1)**rnd.randrange(2))
             asteroids.append(newAsteroid)
+            
+        asteroidDummy = list(asteroids)
         sleep(0.0001)
         for body in bodies:
             compute_motion(body)
-        for ast in asteroids:
+        for ast in asteroidDummy:
             if abs(ast.px) > 100*AU or abs(ast.py) > 100*AU:
                 ast.model.retain = 0
                 asteroids.remove(ast)
-                continue
-            compute_forces(ast,bodies)
+            else:
+                compute_forces(ast,bodies)
         count += 1
 def main():
 #   pdb.set_trace()
