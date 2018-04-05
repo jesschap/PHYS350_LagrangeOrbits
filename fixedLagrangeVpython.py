@@ -17,7 +17,7 @@ from vpython import *
 # currently set to a day. Note the sleep value is
 # set to 0.1ms, which means that relative to a real second,
 # the simulation will operate at timestep * 10000 seconds.
-timestep = 5*3600
+timestep = 24*3600*2
 
 collisions = 0
 # Gravitational constant
@@ -196,15 +196,15 @@ class Asteroid:
         dy = (oy-sy)
         d = math.sqrt(dx**2 + dy**2)
 
-<<<<<<< HEAD
+
         # Report an error if the distance is zero cuz u
         # get a ZeroDivisionError exception further down.
-        if d <= 10*R_EAR and other.name == 'Earth':
+        if d <= 2*R_EAR and other.name == 'Earth':
             global collisions
             collisions += 1
             self.model.color = color.red
             asteroids.remove(self)
-=======
+
         # If its within a certain radius of the earth, it's collided. Keep
         # track of collisions so only record one collision per asteroid.
         # Print out its initial conditions to the screen
@@ -212,15 +212,15 @@ class Asteroid:
             global collisions
             collisions += 1
             self.collided = True
-            print("\nInitial position: " + str(self.ipx) + ", " + str(self.ipy))
+            print("\nInitial position: " + str(self.ipx/AU) + ", " + str(self.ipy/AU))
             print("Initial velocity: " + str(self.ivx) + ", " + str(self.ivy))
-            f = open("collision_log.txt","a")
-            f.write("\nInitial position (x,y): " + str(self.ipx) + ", " + str(self.ipy))
-            f.write("\nInitial velocity (x,y): " + str(self.ivx) + ", " + str(self.ivy))
+            f = open("collision_log_2R_EARTH_Jupiter_True.txt","a")
+            f.write("\nInitial position in AU (x,y): " + str(self.ipx/AU) + ", " + str(self.ipy/AU))
+            f.write("\nInitial velocity in AU (x,y): " + str(self.ivx) + ", " + str(self.ivy))
             f.write("\n")
             f.close()
 
->>>>>>> b49ef1424cfa086b8921547f11597f2662af901f
+
 
         # Compute the force of attraction
         f = G * self.mass * other.mass / (d**2)
