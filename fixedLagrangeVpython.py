@@ -2,7 +2,10 @@
 """
 Created on Sat Mar  3 16:43:29 2018
 
-@author: aaron
+@author: Aaron Janz
+       : Jessica Chapman
+       : Declan Johnston
+       : Theophilus Ko
 """
 import pdb
 import math
@@ -146,12 +149,15 @@ class Body:
 
 class Asteroid:
     """
-    name  : name of planet
-    model : vpython model of planet
-    mass  : mass (kg)
-    angle : planet angle from reference (radians)
-    vx, vy: x, y velocities in m/s
-    px, py: x,y positions in m
+    name    : name of planet
+    model   : vpython model of planet
+    mass    : mass (kg)
+    angle   : planet angle from reference (radians)
+    vx, vy  : x, y velocities in m/s
+    px, py  : x,y positions in m
+    ivx, ivy: initial x, y velocities in m/s
+    ipx, ipy: initial x,y positions in m
+    collided: true if the asteroid has collided with earth
     """
 
     def __init__(self, name, mass, angle, vx, vy, px, py):
@@ -162,9 +168,14 @@ class Asteroid:
         self.vy    = vy
         self.px    = px
         self.py    = py
-        self.model = sphere(pos    = vector(px,py,0),
+        self.ivx   = vx
+        self.ivy   = vy
+        self.ipx   = px
+        self.ipy   = py
+        self.model = asteroidmodel1 = sphere(pos    = vector(px,py,0),
                                 radius = R_AST1 * LARGEBODYSCALE,
                                 color  = color.cyan, make_trail=True, retain = 100)
+        self.collided = False
 
     def attraction(self, other,asteroids):
         """(Body): (fx, fy)
@@ -185,6 +196,7 @@ class Asteroid:
         dy = (oy-sy)
         d = math.sqrt(dx**2 + dy**2)
 
+<<<<<<< HEAD
         # Report an error if the distance is zero cuz u
         # get a ZeroDivisionError exception further down.
         if d <= 10*R_EAR and other.name == 'Earth':
@@ -192,6 +204,23 @@ class Asteroid:
             collisions += 1
             self.model.color = color.red
             asteroids.remove(self)
+=======
+        # If its within a certain radius of the earth, it's collided. Keep
+        # track of collisions so only record one collision per asteroid.
+        # Print out its initial conditions to the screen
+        if d <= AU*0.5 and other.name == 'Earth' and self.collided == False:
+            global collisions
+            collisions += 1
+            self.collided = True
+            print("\nInitial position: " + str(self.ipx) + ", " + str(self.ipy))
+            print("Initial velocity: " + str(self.ivx) + ", " + str(self.ivy))
+            f = open("collision_log.txt","a")
+            f.write("\nInitial position (x,y): " + str(self.ipx) + ", " + str(self.ipy))
+            f.write("\nInitial velocity (x,y): " + str(self.ivx) + ", " + str(self.ivy))
+            f.write("\n")
+            f.close()
+
+>>>>>>> b49ef1424cfa086b8921547f11597f2662af901f
 
         # Compute the force of attraction
         f = G * self.mass * other.mass / (d**2)
@@ -274,7 +303,7 @@ def update_vmodel(body):
 
     # Assign the model position in x and y, assume it is at z = 0
     body.model.pos = vector(x, y, z)
-    
+
 def loop(bodies, asteroids):
     """
     bodies: a list of bodies that will be modelled in the potential
