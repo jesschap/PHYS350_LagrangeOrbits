@@ -12,7 +12,6 @@ import math
 import random as rnd
 from vpython import *
 
-
 # Simulation timestep, increasing this number
 # will make the simulation run faster. Timestep
 # currently set to a day. Note the sleep value is
@@ -304,26 +303,29 @@ def loop(bodies, asteroids):
     positions of all the provided bodies.
     """
     count = 0
+    
     while True:
         if count % 10 == 0:
             # Print the years lapsed with commas to separate 3's of digits.
-            scene.title  = 'Planet Simulation: ' + str("{:,d}".format(int(timestep*count/(3*10**7))) +
+            scene.title  = 'Planet Simulation: ' + str("{:,d}".format(int(timestep*count/(3*10**7))) + 
                                                        ' years' + '   Collisions: ' +str(collisions) +
                                                        '   Number of Local Asteroids: ' +str(len(asteroids)))
 #            print(str("{:,d}".format(int(timestep*count/365))) + ' years')
-        if count%10 == 0:
+        if count%100 == 0:
             newAsteroid = Asteroid('Asteroid'+str(count),
                                        M_AST*float(rnd.randint(0,10)+rnd.uniform(-1,1)), 0, 10000*float(rnd.uniform(-1,1)),10000*float(rnd.uniform(-1,1)),
                                        (30*AU+rnd.randint(-3,3))*(-1)**rnd.randrange(2),(D_AST+rnd.randint(-3,3))*(-1)**rnd.randrange(2))
             asteroids.append(newAsteroid)
+            
+        asteroidDummy = list(asteroids)
         sleep(0.0001)
         for body in bodies:
             compute_motion(body)
-        for ast in asteroids:
-#            if abs(ast.px) > 100*AU or abs(ast.py) > 100*AU:
-#                ast.model.retain = 0
-#                asteroids.remove(ast)
-#                continue
+        for ast in asteroidDummy:
+            if abs(ast.px) > 100*AU or abs(ast.py) > 100*AU:
+                ast.model.retain = 1
+                asteroids.remove(ast)
+
             compute_forces(ast,bodies)
         count += 1
 def main():
@@ -346,6 +348,7 @@ def main():
     # Initialize all of the vpython models
     sunmodel     = sphere(pos    = vector(D_SUN,0,0),
                           radius = R_SUN * SUNSCALE,
+                          texture={'file':textures.flower},
                           color  = color.yellow)
     mercurymodel = sphere(pos    = vector(D_MER,0,0),
                           radius = R_MER * SMALLBODYSCALE,
@@ -405,7 +408,7 @@ def main():
     asteroid8 = Asteroid('Asteroid8', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(0.5,1),17000.0*rnd.uniform(0.5,1), -30*AU,-25*AU)
     #4th Quadrant -> negative vx and positive vy
     asteroid9 = Asteroid('Asteroid9', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 7000.0*rnd.uniform(-1,-0.5),7000.0*rnd.uniform(0.5,1), 27*AU,-30*AU)
-    asteroid10= Asteroid('Asteroid10', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)),0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(0.5,1), 30*AU,-27*AU)
+    asteroid10= Asteroid('Asteroid10', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)),0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(0.5,1), 30*AU,-27*AU) 
 
     loop([mercury, venus,sun, earth, mars,jupiter,saturn, uranus, neptune], [])
 
