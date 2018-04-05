@@ -14,7 +14,7 @@ from vpython import *
 # currently set to a day. Note the sleep value is
 # set to 0.1ms, which means that relative to a real second,
 # the simulation will operate at timestep * 10000 seconds.
-timestep = 24 * 3600 * 30
+timestep = 5*3600
 
 collisions = 0
 # Gravitational constant
@@ -166,7 +166,7 @@ class Asteroid:
                                 radius = R_AST1 * LARGEBODYSCALE,
                                 color  = color.cyan, make_trail=True, retain = 100)
 
-    def attraction(self, other):
+    def attraction(self, other,asteroids):
         """(Body): (fx, fy)
 
         Returns the force exerted upon this body by the other body.
@@ -187,9 +187,11 @@ class Asteroid:
 
         # Report an error if the distance is zero cuz u
         # get a ZeroDivisionError exception further down.
-        if d <= AU*0.5 and other.name == 'Earth':
+        if d <= 10*R_EAR and other.name == 'Earth':
             global collisions
             collisions += 1
+            self.model.color = color.red
+            asteroids.remove(self)
 
         # Compute the force of attraction
         f = G * self.mass * other.mass / (d**2)
@@ -204,12 +206,12 @@ class Asteroid:
 
 
 
-def compute_forces(ast,bodies):
+def compute_forces(ast,bodies,asteroids):
 
     total_fx = total_fy = 0.0
     for body in bodies:
         # Add up all of the forces exerted on 'body'.
-        fx, fy = ast.attraction(body)
+        fx, fy = ast.attraction(body,asteroids)
         total_fx += fx
         total_fy += fy
 
@@ -284,20 +286,19 @@ def loop(bodies, asteroids):
     count = 0
     
     while True:
-        if count % 10 == 0:
+        if count % 1 == 0:
             # Print the years lapsed with commas to separate 3's of digits.
-            scene.title  = 'Planet Simulation: ' + str("{:,d}".format(int(timestep*count/(3*10**7))) + 
+            scene.title  = 'Planet Simulation: ' + str("{:,d}".format(int(timestep*count/(3.152*10**7))) + 
                                                        ' years' + '   Collisions: ' +str(collisions) +
                                                        '   Number of Local Asteroids: ' +str(len(asteroids)))
 #            print(str("{:,d}".format(int(timestep*count/365))) + ' years')
-        if count%100 == 0:
+        if len(asteroids) < 30:
             newAsteroid = Asteroid('Asteroid'+str(count),
                                        M_AST*float(rnd.randint(0,10)+rnd.uniform(-1,1)), 0, 10000*float(rnd.uniform(-1,1)),10000*float(rnd.uniform(-1,1)),
-                                       (30*AU+rnd.randint(-3,3))*(-1)**rnd.randrange(2),(D_AST+rnd.randint(-3,3))*(-1)**rnd.randrange(2))
+                                       (30*AU+rnd.randint(-3,3)*AU)*(-1)**rnd.randrange(2),(30*AU+rnd.randint(-3,3)*AU)*(-1)**rnd.randrange(2))
             asteroids.append(newAsteroid)
-            
         asteroidDummy = list(asteroids)
-        sleep(0.0001)
+        #sleep(0.0001)
         for body in bodies:
             compute_motion(body)
         for ast in asteroidDummy:
@@ -305,7 +306,7 @@ def loop(bodies, asteroids):
                 ast.model.retain = 1
                 asteroids.remove(ast)
 
-            compute_forces(ast,bodies)
+            compute_forces(ast,bodies,asteroids)
         count += 1
 def main():
 #   pdb.set_trace()
