@@ -1,0 +1,3 @@
+
+Initial position in AU (x,y): 33.0, 26.0
+Initial velocity in AU (x,y): -1610.486047259805, -2478.278636433448

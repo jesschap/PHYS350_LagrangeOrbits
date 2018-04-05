@@ -1,0 +1,204 @@
+
+Initial position in AU (x,y): 33.0, -30.0
+Initial velocity in AU (x,y): -6901.9567032424375, 5825.823782212001
+
+Initial position in AU (x,y): -31.0, -30.0
+Initial velocity in AU (x,y): 3959.117516914603, 2707.043586165907
+
+Initial position in AU (x,y): 28.0, 30.0
+Initial velocity in AU (x,y): 405.4284423319121, -1185.6098108408441
+
+Initial position in AU (x,y): -29.0, 28.0
+Initial velocity in AU (x,y): -1061.742411427722, 1778.779857957191
+
+Initial position in AU (x,y): -29.0, 32.0
+Initial velocity in AU (x,y): 8157.982508612942, -8996.620019035823
+
+Initial position in AU (x,y): 28.0, -33.0
+Initial velocity in AU (x,y): -1232.555515671645, 1289.7651987074466
+
+Initial position in AU (x,y): -27.0, 33.0
+Initial velocity in AU (x,y): -750.655022657829, 77.11422508225318
+
+Initial position in AU (x,y): 27.0, -31.0
+Initial velocity in AU (x,y): 3192.9858054305214, -1915.1251867534925
+
+Initial position in AU (x,y): 27.0, -27.0
+Initial velocity in AU (x,y): -896.1189543130411, -723.7325877336076
+
+Initial position in AU (x,y): 31.0, 28.0
+Initial velocity in AU (x,y): -5291.037359908532, -3715.0979371657922
+
+Initial position in AU (x,y): 29.0, -32.0
+Initial velocity in AU (x,y): -802.9686966963667, 1863.2031003457982
+
+Initial position in AU (x,y): 30.0, -28.0
+Initial velocity in AU (x,y): 3243.6402536841038, -3425.8794726523934
+
+Initial position in AU (x,y): -29.0, 32.0
+Initial velocity in AU (x,y): -1873.569347474564, 2401.9037869738045
+
+Initial position in AU (x,y): 28.0, -28.0
+Initial velocity in AU (x,y): -4281.40823041816, 5224.354129645366
+
+Initial position in AU (x,y): 27.0, 30.0
+Initial velocity in AU (x,y): 2277.177069082896, 1228.259399761924
+
+Initial position in AU (x,y): 31.0, 30.0
+Initial velocity in AU (x,y): -1083.0230758076054, -83.54459813983527
+
+Initial position in AU (x,y): 27.0, 28.0
+Initial velocity in AU (x,y): -529.6938544360041, -2418.691773805679
+
+Initial position in AU (x,y): -30.0, -29.0
+Initial velocity in AU (x,y): 9668.938671893407, 9725.933975311871
+
+Initial position in AU (x,y): 28.0, -27.0
+Initial velocity in AU (x,y): -157.59737056974643, -521.0783449985645
+
+Initial position in AU (x,y): -28.0, -31.0
+Initial velocity in AU (x,y): 1285.6476681548368, 2765.307039837901
+
+Initial position in AU (x,y): -30.0, -27.0
+Initial velocity in AU (x,y): -2720.072965637137, -1073.7759905665966
+
+Initial position in AU (x,y): 29.0, 31.0
+Initial velocity in AU (x,y): -966.5540896610869, -2069.955235057901
+
+Initial position in AU (x,y): -30.0, -30.0
+Initial velocity in AU (x,y): 7294.289253345494, 8657.387440756405
+
+Initial position in AU (x,y): 30.0, 27.0
+Initial velocity in AU (x,y): -7522.17098813609, -5321.005363366587
+
+Initial position in AU (x,y): -32.0, -29.0
+Initial velocity in AU (x,y): -3222.71086757707, -1873.159624316274
+
+Initial position in AU (x,y): -32.0, 28.0
+Initial velocity in AU (x,y): 2332.519795181109, -2060.8297720932756
+
+Initial position in AU (x,y): 31.0, -33.0
+Initial velocity in AU (x,y): 3197.364548345403, -3839.4199162562104
+
+Initial position in AU (x,y): 27.0, -29.0
+Initial velocity in AU (x,y): 2126.5242853943, -3397.748574709625
+
+Initial position in AU (x,y): 27.0, 29.0
+Initial velocity in AU (x,y): -6143.427639560393, -7511.110419131224
+
+Initial position in AU (x,y): -27.0, 32.0
+Initial velocity in AU (x,y): -1866.5316439250646, 1564.4962472322077
+
+Initial position in AU (x,y): -30.0, 28.0
+Initial velocity in AU (x,y): -2896.920738832016, 4328.968135357749
+
+Initial position in AU (x,y): -27.0, -30.0
+Initial velocity in AU (x,y): -2469.66962283802, -2345.256811347438
+
+Initial position in AU (x,y): 32.0, 28.0
+Initial velocity in AU (x,y): 3101.273335606107, 4053.3477203266966
+
+Initial position in AU (x,y): 27.0, -33.0
+Initial velocity in AU (x,y): -4884.168718067011, 4628.295270769716
+
+Initial position in AU (x,y): -27.0, -28.0
+Initial velocity in AU (x,y): 9308.249043710139, 9509.06156529667
+
+Initial position in AU (x,y): 27.0, 30.0
+Initial velocity in AU (x,y): -2330.0399153691596, -2968.969085015083
+
+Initial position in AU (x,y): 29.0, -31.0
+Initial velocity in AU (x,y): -2099.4032637095183, 1187.031549156996
+
+Initial position in AU (x,y): 29.0, -28.0
+Initial velocity in AU (x,y): 165.13801113807068, -825.6836802907208
+
+Initial position in AU (x,y): -30.0, 28.0
+Initial velocity in AU (x,y): 6594.295412140971, -7722.577145071792
+
+Initial position in AU (x,y): 31.0, -29.0
+Initial velocity in AU (x,y): -2063.461967570395, 1890.9298276639186
+
+Initial position in AU (x,y): 29.0, 32.0
+Initial velocity in AU (x,y): -1919.3540851323698, -653.7447424589859
+
+Initial position in AU (x,y): 27.0, -30.0
+Initial velocity in AU (x,y): -926.4434050937842, -374.85210678198877
+
+Initial position in AU (x,y): 30.0, -30.0
+Initial velocity in AU (x,y): 513.0173079208511, -1577.5634203769862
+
+Initial position in AU (x,y): -30.0, -30.0
+Initial velocity in AU (x,y): -1226.1427031258609, 122.9695520409213
+
+Initial position in AU (x,y): 32.0, -29.0
+Initial velocity in AU (x,y): -4426.23783539988, 4156.977935763828
+
+Initial position in AU (x,y): 29.0, -32.0
+Initial velocity in AU (x,y): -8673.900371280406, 8176.966307128666
+
+Initial position in AU (x,y): 29.0, 28.0
+Initial velocity in AU (x,y): -871.4936792413819, 837.1473245637873
+
+Initial position in AU (x,y): -27.0, -28.0
+Initial velocity in AU (x,y): 3574.3502388635684, 4383.610778337059
+
+Initial position in AU (x,y): -33.0, -32.0
+Initial velocity in AU (x,y): -40.70140151082757, -1469.4066108559923
+
+Initial position in AU (x,y): -32.0, 32.0
+Initial velocity in AU (x,y): 5950.557819550701, -6824.523275390439
+
+Initial position in AU (x,y): -31.0, -27.0
+Initial velocity in AU (x,y): -4179.941502442932, -2196.2323721730104
+
+Initial position in AU (x,y): -27.0, 27.0
+Initial velocity in AU (x,y): 9855.843057823684, -8775.242334832214
+
+Initial position in AU (x,y): 28.0, 28.0
+Initial velocity in AU (x,y): 2097.5546767852493, 2890.409233452573
+
+Initial position in AU (x,y): 28.0, -30.0
+Initial velocity in AU (x,y): 3200.77804132626, -2570.8893207645488
+
+Initial position in AU (x,y): 27.0, -28.0
+Initial velocity in AU (x,y): 1674.7014847862229, 1145.0129402144494
+
+Initial position in AU (x,y): -31.0, 31.0
+Initial velocity in AU (x,y): 9528.537568026268, -9490.502526175456
+
+Initial position in AU (x,y): -31.0, 28.0
+Initial velocity in AU (x,y): 2878.428373780817, -1279.3462830127144
+
+Initial position in AU (x,y): 27.0, -29.0
+Initial velocity in AU (x,y): 124.58109701936282, 1173.2547566290807
+
+Initial position in AU (x,y): -31.0, -30.0
+Initial velocity in AU (x,y): -714.4362830095253, -68.05020532448137
+
+Initial position in AU (x,y): 30.0, -29.0
+Initial velocity in AU (x,y): 105.69309815561479, -778.9741695178143
+
+Initial position in AU (x,y): 32.0, 29.0
+Initial velocity in AU (x,y): -35.393397286953565, -669.5038344510573
+
+Initial position in AU (x,y): -31.0, -30.0
+Initial velocity in AU (x,y): -742.4673508854762, -1488.271464221378
+
+Initial position in AU (x,y): -32.0, 29.0
+Initial velocity in AU (x,y): -2147.22191461834, 2586.122481331261
+
+Initial position in AU (x,y): -32.0, 30.0
+Initial velocity in AU (x,y): 3784.970072306644, -4418.27748233762
+
+Initial position in AU (x,y): 29.0, 29.0
+Initial velocity in AU (x,y): -9629.139777881623, -9076.76713980924
+
+Initial position in AU (x,y): -31.0, 31.0
+Initial velocity in AU (x,y): -876.4996072574683, -311.10205215076235
+
+Initial position in AU (x,y): 33.0, 30.0
+Initial velocity in AU (x,y): -4201.888001249589, -2867.7468322377786
+
+Initial position in AU (x,y): -30.0, -32.0
+Initial velocity in AU (x,y): -146.8626258053618, 503.6196900025636

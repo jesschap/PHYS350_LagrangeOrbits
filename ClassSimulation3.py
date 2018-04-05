@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on Sat Mar  3 16:43:29 2018
 
@@ -17,7 +16,7 @@ from vpython import *
 # currently set to a day. Note the sleep value is
 # set to 0.1ms, which means that relative to a real second,
 # the simulation will operate at timestep * 10000 seconds.
-timestep = 24*3600*2
+timestep = 24*3600*10
 
 collisions = 0
 # Gravitational constant
@@ -174,7 +173,7 @@ class Asteroid:
         self.ipy   = py
         self.model = asteroidmodel1 = sphere(pos    = vector(px,py,0),
                                 radius = R_AST1 * LARGEBODYSCALE,
-                                color  = color.cyan, make_trail=True, retain = 100)
+                                color  = color.red, make_trail=True, retain = 100)
         self.collided = False
 
     def attraction(self, other,asteroids):
@@ -205,21 +204,22 @@ class Asteroid:
             self.model.color = color.red
             asteroids.remove(self)
 
-
         # If its within a certain radius of the earth, it's collided. Keep
         # track of collisions so only record one collision per asteroid.
         # Print out its initial conditions to the screen
-        if d <= 0.5*AU and other.name == 'Earth' and self.collided == False:
+        if d <= AU*0.5 and other.name == 'Earth' and self.collided == False:
             global collisions
             collisions += 1
             self.collided = True
-            print("\nInitial position: " + str(self.ipx/AU) + ", " + str(self.ipy/AU))
-            print("Initial velocity: " + str(self.ivx) + ", " + str(self.ivy))
-            f = open("collision_log_2R_EARTH_17000_Jupiter_False.txt","a")
-            f.write("\nInitial position in AU (x,y): " + str(self.ipx/AU) + ", " + str(self.ipy/AU))
-            f.write("\nInitial velocity in AU (x,y): " + str(self.ivx) + ", " + str(self.ivy))
-            f.write("\n")
-            f.close()
+            self.model.retain = 1
+            asteroids.remove(self)
+#            print("\nInitial position: " + str(self.ipx/AU) + ", " + str(self.ipy/AU))
+#            print("Initial velocity: " + str(self.ivx) + ", " + str(self.ivy))
+#            f = open("collision_log_2R_EARTH_17000_Jupiter_False.txt","a")
+#            f.write("\nInitial position in AU (x,y): " + str(self.ipx/AU) + ", " + str(self.ipy/AU))
+#            f.write("\nInitial velocity in AU (x,y): " + str(self.ivx) + ", " + str(self.ivy))
+#            f.write("\n")
+#            f.close()
 
 
 
@@ -322,13 +322,13 @@ def loop(bodies, asteroids):
                                                        ' years' + '   Collisions: ' +str(collisions) +
                                                        '   Number of Local Asteroids: ' +str(len(asteroids)))
 #            print(str("{:,d}".format(int(timestep*count/365))) + ' years')
-        if len(asteroids) < 30 and count%10 == 0:
-            newAsteroid = Asteroid('Asteroid'+str(count),
-                                       M_AST*float(rnd.randint(0,10)+rnd.uniform(-1,1)), 0, 17000*float(rnd.uniform(-1,1)),17000*float(rnd.uniform(-1,1)),
-                                       (30*AU+rnd.randint(-4,4)*AU)*(-1)**rnd.randrange(2),(30*AU+rnd.randint(-4,4)*AU)*(-1)**rnd.randrange(2))
-            asteroids.append(newAsteroid)
+#        if count%10 == 0 and len(asteroids) < 50:
+#            newAsteroid = Asteroid('Asteroid'+str(count),
+#                                       M_AST*float(rnd.randint(0,10)+rnd.uniform(-1,1)), 0, 17000*float(rnd.uniform(-1,1)),17000*float(rnd.uniform(-1,1)),
+#                                       (30*AU+rnd.randint(-3,3)*AU)*(-1)**rnd.randrange(2),(30*AU+rnd.randint(-3,3)*AU)*(-1)**rnd.randrange(2))
+#            asteroids.append(newAsteroid)
         asteroidDummy = list(asteroids)
-        #sleep(0.0001)
+        sleep(0.0001)
         for body in bodies:
             compute_motion(body)
         for ast in asteroidDummy:
@@ -405,26 +405,24 @@ def main():
     neptune = Body('Neptune', neptunemodel, M_NEP, P_NEP, D_NEP, L_NEP, E_NEP, T_NEP)
     #(name, model, mass, angle,vx, vy, px, py)
     #10000.0*float(rnd.uniform(-1,1))
-    asteroid1 = Asteroid('Asteroid1', M_AST1, 0, -5000.0,0, 10*AU, 10*AU)
-    asteroid2 = Asteroid('Asteroid2', M_AST2, 0, 3000, 0, -10,-10*AU)
+    
+    asteroid1 = Asteroid('Asteroid1', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, -6901.9567,5825.8237, 33*AU, -30*AU)
+    asteroid2 = Asteroid('Asteroid2', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 3959.1175, 2707.043, -31*AU,-30*AU)
     #First quadrant-> negative vx and vy
-    asteroid3 = Asteroid('Asteroid3', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 7000.0*rnd.uniform(-1,-0.5),7000.0*rnd.uniform(-1,-0.5), 20*AU,30*AU)
-    asteroid4 = Asteroid('Asteroid4', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(-1,-0.5), 30*AU,20*AU)
+    asteroid3 = Asteroid('Asteroid3', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 405.428,-1185.609, 28*AU,-30*AU)
+    asteroid4 = Asteroid('Asteroid4', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, -1061.7424,1778.779, -29*AU,-28*AU)
     #Second Quadrant -> positive vx and negative vy
-    asteroid5 = Asteroid('Asteroid5', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 7000.0*rnd.uniform(0.5,1),7000.0*rnd.uniform(-1,-0.5), -20*AU,30*AU)
-    asteroid6 = Asteroid('Asteroid6', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(0.5,1),17000.0*rnd.uniform(-1,-0.5), -30*AU,20*AU)
+    asteroid5 = Asteroid('Asteroid5', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 2878.42837,-1279.346, -31*AU,28*AU)
+    asteroid6 = Asteroid('Asteroid6', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, -1232.555,1289.76519, 28*AU,-33*AU)
     #Third Quadrant -> positive vx and vy
-    asteroid7 = Asteroid('Asteroid7', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 7000.0*rnd.uniform(0.5,1),7000.0*rnd.uniform(0.5,1), -25*AU,-30*AU)
-    asteroid8 = Asteroid('Asteroid8', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(0.5,1),17000.0*rnd.uniform(0.5,1), -30*AU,-25*AU)
+    asteroid7 = Asteroid('Asteroid7', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, -750.65502,77.11422, -27*AU, 33*AU)
+    asteroid8 = Asteroid('Asteroid8', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 3192.985,-1915.125, 27*AU,-31*AU)
     #4th Quadrant -> negative vx and positive vy
-    asteroid9 = Asteroid('Asteroid9', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 7000.0*rnd.uniform(-1,-0.5),7000.0*rnd.uniform(0.5,1), 27*AU,-30*AU)
-    asteroid10= Asteroid('Asteroid10', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)),0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(0.5,1), 30*AU,-27*AU) 
+    asteroid9 = Asteroid('Asteroid9', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, -896.11895,-723.732820, 27*AU,-27*AU)
+    asteroid10= Asteroid('Asteroid10', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)),0, -5291.0373,-3715.09, 31*AU,28*AU) 
 
-    loop([mercury, venus,sun, earth, mars,jupiter,saturn, uranus, neptune], [])
+    loop([mercury, venus,sun, earth, mars,saturn, uranus, neptune],
+         [asteroid1,asteroid2,asteroid3,asteroid4,asteroid5,asteroid6,asteroid7,asteroid8,asteroid9,asteroid10])
 
 if __name__ == '__main__':
     main()
-
-
-
-
