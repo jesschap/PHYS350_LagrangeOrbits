@@ -2,12 +2,16 @@
 """
 Created on Sat Mar  3 16:43:29 2018
 
-@author: aaron
+@author: Aaron Janz
+       : Jessica Chapman
+       : Declan Johnston
+       : Theophilus Ko
 """
 import pdb
 import math
 import random as rnd
 from vpython import *
+
 
 # Simulation timestep, increasing this number
 # will make the simulation run faster. Timestep
@@ -146,12 +150,15 @@ class Body:
 
 class Asteroid:
     """
-    name  : name of planet
-    model : vpython model of planet
-    mass  : mass (kg)
-    angle : planet angle from reference (radians)
-    vx, vy: x, y velocities in m/s
-    px, py: x,y positions in m
+    name    : name of planet
+    model   : vpython model of planet
+    mass    : mass (kg)
+    angle   : planet angle from reference (radians)
+    vx, vy  : x, y velocities in m/s
+    px, py  : x,y positions in m
+    ivx, ivy: initial x, y velocities in m/s
+    ipx, ipy: initial x,y positions in m
+    collided: true if the asteroid has collided with earth
     """
 
     def __init__(self, name, mass, angle, vx, vy, px, py):
@@ -162,9 +169,14 @@ class Asteroid:
         self.vy    = vy
         self.px    = px
         self.py    = py
+        self.ivx   = vx
+        self.ivy   = vy
+        self.ipx   = px
+        self.ipy   = py
         self.model = asteroidmodel1 = sphere(pos    = vector(px,py,0),
                                 radius = R_AST1 * LARGEBODYSCALE,
                                 color  = color.cyan, make_trail=True, retain = 100)
+        self.collided = False
 
     def attraction(self, other):
         """(Body): (fx, fy)
@@ -185,11 +197,21 @@ class Asteroid:
         dy = (oy-sy)
         d = math.sqrt(dx**2 + dy**2)
 
-        # Report an error if the distance is zero cuz u
-        # get a ZeroDivisionError exception further down.
-        if d <= AU*0.5 and other.name == 'Earth':
+        # If its within a certain radius of the earth, it's collided. Keep
+        # track of collisions so only record one collision per asteroid.
+        # Print out its initial conditions to the screen
+        if d <= AU*0.5 and other.name == 'Earth' and self.collided == False:
             global collisions
             collisions += 1
+            self.collided = True
+            print("\nInitial position: " + str(self.ipx) + ", " + str(self.ipy))
+            print("Initial velocity: " + str(self.ivx) + ", " + str(self.ivy))
+            f = open("collision_log.txt","a")
+            f.write("\nInitial position (x,y): " + str(self.ipx) + ", " + str(self.ipy))
+            f.write("\nInitial velocity (x,y): " + str(self.ivx) + ", " + str(self.ivy))
+            f.write("\n")
+            f.close()
+
 
         # Compute the force of attraction
         f = G * self.mass * other.mass / (d**2)
@@ -285,11 +307,11 @@ def loop(bodies, asteroids):
     while True:
         if count % 10 == 0:
             # Print the years lapsed with commas to separate 3's of digits.
-            scene.title  = 'Planet Simulation: ' + str("{:,d}".format(int(timestep*count/(3*10**7))) + 
+            scene.title  = 'Planet Simulation: ' + str("{:,d}".format(int(timestep*count/(3*10**7))) +
                                                        ' years' + '   Collisions: ' +str(collisions) +
                                                        '   Number of Local Asteroids: ' +str(len(asteroids)))
 #            print(str("{:,d}".format(int(timestep*count/365))) + ' years')
-        if count%100 == 0:
+        if count%10 == 0:
             newAsteroid = Asteroid('Asteroid'+str(count),
                                        M_AST*float(rnd.randint(0,10)+rnd.uniform(-1,1)), 0, 10000*float(rnd.uniform(-1,1)),10000*float(rnd.uniform(-1,1)),
                                        (30*AU+rnd.randint(-3,3))*(-1)**rnd.randrange(2),(D_AST+rnd.randint(-3,3))*(-1)**rnd.randrange(2))
@@ -298,10 +320,10 @@ def loop(bodies, asteroids):
         for body in bodies:
             compute_motion(body)
         for ast in asteroids:
-            if abs(ast.px) > 100*AU or abs(ast.py) > 100*AU:
-                ast.model.retain = 0
-                asteroids.remove(ast)
-                continue
+#            if abs(ast.px) > 100*AU or abs(ast.py) > 100*AU:
+#                ast.model.retain = 0
+#                asteroids.remove(ast)
+#                continue
             compute_forces(ast,bodies)
         count += 1
 def main():
@@ -324,7 +346,6 @@ def main():
     # Initialize all of the vpython models
     sunmodel     = sphere(pos    = vector(D_SUN,0,0),
                           radius = R_SUN * SUNSCALE,
-                          texture={'file':textures.flower},
                           color  = color.yellow)
     mercurymodel = sphere(pos    = vector(D_MER,0,0),
                           radius = R_MER * SMALLBODYSCALE,
@@ -384,7 +405,7 @@ def main():
     asteroid8 = Asteroid('Asteroid8', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 17000.0*rnd.uniform(0.5,1),17000.0*rnd.uniform(0.5,1), -30*AU,-25*AU)
     #4th Quadrant -> negative vx and positive vy
     asteroid9 = Asteroid('Asteroid9', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)), 0, 7000.0*rnd.uniform(-1,-0.5),7000.0*rnd.uniform(0.5,1), 27*AU,-30*AU)
-    asteroid10= Asteroid('Asteroid10', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)),0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(0.5,1), 30*AU,-27*AU) 
+    asteroid10= Asteroid('Asteroid10', M_AST*(rnd.randint(1,100)+rnd.uniform(-1,1)),0, 17000.0*rnd.uniform(-1,-0.5),17000.0*rnd.uniform(0.5,1), 30*AU,-27*AU)
 
     loop([mercury, venus,sun, earth, mars,jupiter,saturn, uranus, neptune], [])
 
