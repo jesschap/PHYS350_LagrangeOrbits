@@ -302,10 +302,10 @@ def loop(bodies, asteroids):
             compute_motion(body)
         for ast in asteroidDummy:
             if abs(ast.px) > 100*AU or abs(ast.py) > 100*AU:
-                ast.model.retain = 0
+                ast.model.retain = 1
                 asteroids.remove(ast)
-            else:
-                compute_forces(ast,bodies)
+
+            compute_forces(ast,bodies)
         count += 1
 def main():
 #   pdb.set_trace()
